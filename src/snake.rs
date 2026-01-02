@@ -60,7 +60,7 @@ impl Snake {
                 x: self.x,
                 y: self.y,
                 width: 4,
-                height: 4,
+                height: 2,
             };
 
             let solid_square = Block::default()
