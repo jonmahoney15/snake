@@ -1,4 +1,4 @@
-use ratatui::{layout::Rect, style::{Color, Style}, widgets::{Block, Borders}, Frame};
+use ratatui::{layout::{Margin, Rect}, style::{Color, Style}, widgets::{Block, Borders}, Frame};
 
 pub struct Board {
     x: u16,
@@ -32,5 +32,37 @@ impl Board {
             .style(Style::default().fg(Color::Red));
 
         f.render_widget(block, square);
+    }
+
+    pub fn get_inner_x_pair(&self) -> (u16, u16) {
+        let area = Rect {
+            x: self.x,
+            y: self.y,
+            width: self.cell_size * (self.grid_size * 2),
+            height: self.cell_size * self.grid_size,
+        };
+
+        let inner = area.inner(Margin {
+            vertical: 1,
+            horizontal: 1
+        });
+
+        (inner.x, inner.x + inner.width)
+    }
+
+    pub fn get_inner_y_pair(&self) -> (u16, u16) {
+        let area = Rect {
+            x: self.x,
+            y: self.y,
+            width: self.cell_size * (self.grid_size * 2),
+            height: self.cell_size * self.grid_size,
+        };
+
+        let inner = area.inner(Margin {
+            vertical: 1,
+            horizontal: 1
+        });
+
+        (inner.y, inner.y + inner.height)
     }
 }
