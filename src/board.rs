@@ -15,7 +15,10 @@ impl Board {
         }
     }
 
-    pub fn render(&self, f: &mut Frame) {
+    pub fn render(&self, f: &mut Frame, score: u8) {
+
+        let score_title = format!("Score: {}", score);
+
         let square = Rect {
             x: self.x,
             y: self.y,
@@ -24,7 +27,7 @@ impl Board {
         };
 
         let block = Block::default()
-            .title("Snake")
+            .title(score_title)
             .borders(Borders::ALL)
             .style(Style::default().fg(Color::Red));
 

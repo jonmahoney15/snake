@@ -21,10 +21,10 @@ impl Snake {
 
     pub fn update_position(&mut self) {
         match self.direction {
-            Direction::LEFT => self.x = self.x - 1,
-            Direction::RIGHT => self.x = self.x + 1,
-            Direction::UP => self.y = self.y - 1,
-            Direction::DOWN => self.y = self.y + 1,
+            Direction::LEFT => self.x -= 1,
+            Direction::RIGHT => self.x += 1,
+            Direction::UP => self.y -= 1,
+            Direction::DOWN => self.y += 1,
         }
     }
 
@@ -56,17 +56,17 @@ impl Snake {
     }
 
     pub fn render(&self, frame: &mut Frame) {
-            let square_area = Rect {
-                x: self.x,
-                y: self.y,
-                width: 4,
-                height: 2,
-            };
+        let square_area = Rect {
+            x: self.x,
+            y: self.y,
+            width: 4,
+            height: 2,
+        };
 
-            let solid_square = Block::default()
-                .style(Style::default().bg(Color::Green))
-                .borders(Borders::NONE);
+        let solid_square = Block::default()
+            .style(Style::default().bg(Color::Green))
+            .borders(Borders::NONE);
 
-            frame.render_widget(solid_square, square_area);
+        frame.render_widget(solid_square, square_area);
     }
 }

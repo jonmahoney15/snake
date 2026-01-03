@@ -1,45 +1,67 @@
 use std::{io, time::Duration};
 
-use crate::{board::Board, snake::{Direction, Snake}};
+use crate::{board::Board, food::Food, snake::{Direction, Snake}};
 
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
+use rand::Rng;
 use ratatui::Frame;
 
 
 pub struct Game {
     running: bool,
     snake: Snake,
-    board: Board
+    board: Board,
+    food: Food,
+    fps: u64,
+    score: u8
 }
 
 impl Game {
     pub fn new() -> Self {
+
+        let mut rng = rand::rng();
+
         let x = 50;
         let y = 0;
 
+        let rand_x: u16 = rng.random_range(51..75);
+        let rand_y: u16 = rng.random_range(1..10);
+
         let board = Board::new(x, y, 4, 8);
+        let food = Food::new(rand_x, rand_y);
 
         Self {
             running: true,
             snake: Snake::new(x+10, y+10, Direction::RIGHT),
-            board
+            board,
+            food,
+            fps: 100,
+            score:0
         }
     }
 
     pub fn update(&mut self) {
         self.snake.update_position();
         let _ = self.handle_events();
+        self.snake_eats_food();
     }
 
     fn handle_events(&mut self) -> io::Result<()> {
-        if event::poll(Duration::from_millis(0))? {
-            if let Event::Key(key_event) = event::read()? {
-                if key_event.kind == KeyEventKind::Press {
-                    self.handle_key_event(key_event);
-                }
-            }
+        if let Some(key_event) = self.poll_key_press(Duration::from_millis(self.fps))? {
+            self.handle_key_event(key_event);
         }
         Ok(())
+    }
+
+    fn poll_key_press(&self, timeout: Duration) -> io::Result<Option<KeyEvent>> {
+        if !event::poll(timeout)? {
+            return Ok(None);
+        }
+
+        match event::read()? {
+            Event::Key(key_event) if key_event.kind == KeyEventKind::Press => Ok(Some(key_event)),
+            _ => Ok(None)
+        }
     }
 
     fn handle_key_event(&mut self, key_event: KeyEvent) {
@@ -61,8 +83,16 @@ impl Game {
         self.running
     }
 
+    fn snake_eats_food(&mut self) {
+        if self.snake.x == self.food.x && self.snake.y == self.food.y {
+            self.score += 1;
+            self.food.update();
+        }
+    }
+
     pub fn render(&self, frame: &mut Frame) {
-        self.board.render(frame);
+        self.board.render(frame, self.score);
+        self.food.render(frame);
         self.snake.render(frame);
     }
 }
