@@ -69,16 +69,6 @@ impl Snake {
         self.body.contains(&next_head)
     }
 
-    fn next_head_position(&self) -> (u16, u16) {
-
-        match self.direction {
-            Direction::LEFT  => (self.x - 1, self.y),
-            Direction::RIGHT => (self.x + 1, self.y),
-            Direction::UP    => (self.x, self.y - 1),
-            Direction::DOWN  => (self.x, self.y + 1),
-        }
-    }
-
     pub fn render(&self, frame: &mut Frame) {
         let square_area = Rect {
             x: self.x,
@@ -114,6 +104,16 @@ impl Snake {
             self.body.push(last);
         } else {
             self.body.push((self.x, self.y));
+        }
+    }
+
+    fn next_head_position(&self) -> (u16, u16) {
+
+        match self.direction {
+            Direction::LEFT  => (self.x - 1, self.y),
+            Direction::RIGHT => (self.x + 1, self.y),
+            Direction::UP    => (self.x, self.y - 1),
+            Direction::DOWN  => (self.x, self.y + 1),
         }
     }
 }

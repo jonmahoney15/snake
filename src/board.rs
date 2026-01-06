@@ -65,4 +65,27 @@ impl Board {
 
         (inner.y, inner.y + inner.height)
     }
+
+    pub fn is_out_of_bounds(&self, x: u16, y: u16) -> bool {
+        let inner = self.inner_rect();
+
+        x < inner.x
+            || x >= inner.x + inner.width
+            || y < inner.y
+            || y >= inner.y + inner.height
+    }
+
+    fn inner_rect(&self) -> Rect {
+        let area = Rect {
+            x: self.x,
+            y: self.y,
+            width: self.cell_size * (self.grid_size * 2),
+            height: self.cell_size * self.grid_size,
+        };
+
+        area.inner(Margin {
+            vertical: 1,
+            horizontal: 1,
+        })
+    }
 }

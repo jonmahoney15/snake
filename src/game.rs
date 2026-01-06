@@ -17,6 +17,7 @@ pub struct Game {
 }
 
 impl Game {
+
     pub fn new() -> Self {
 
         let mut rng = rand::rng();
@@ -48,11 +49,26 @@ impl Game {
         if self.snake.collides_with_body() {
             self.running = false;
             return;
-        } 
+        }
+
+        if self.board.is_out_of_bounds(self.snake.x, self.snake.y) {
+            self.running = false;
+            return;
+        }
 
         self.snake.update_position();
         let _ = self.handle_events();
         self.snake_eats_food();
+    }
+
+    pub fn render(&self, frame: &mut Frame) {
+        self.board.render(frame, self.score);
+        self.food.render(frame);
+        self.snake.render(frame);
+    }
+
+    pub fn is_running(&self) -> bool {
+        self.running
     }
 
     fn handle_events(&mut self) -> io::Result<()> {
@@ -88,21 +104,11 @@ impl Game {
         self.running = false;
     }
 
-    pub fn is_running(&self) -> bool {
-        self.running
-    }
-
     fn snake_eats_food(&mut self) {
         if self.snake.x == self.food.x && self.snake.y == self.food.y {
             self.score += 1;
             self.snake.add_to_body();
             self.food.update();
         }
-    }
-
-    pub fn render(&self, frame: &mut Frame) {
-        self.board.render(frame, self.score);
-        self.food.render(frame);
-        self.snake.render(frame);
     }
 }
