@@ -112,3 +112,21 @@ impl Game {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_is_running_running_true() {
+        let game = Game::new();
+        assert_eq!(game.is_running(), true);
+    }
+
+    #[test]
+    fn test_is_running_exit_false() {
+        let mut game = Game::new();
+        game.exit();
+        assert_eq!(game.is_running(), false);
+    }
+}
