@@ -117,3 +117,81 @@ impl Snake {
         }
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_change_direction_up_snake_headed_left_goes_up() {
+        let mut snake = Snake::new(10, 10, Direction::LEFT);
+
+        snake.change_direction(Direction::UP);
+
+        assert_eq!(snake.direction, Direction::UP);
+    }
+
+    #[test]
+    fn test_change_direction_up_snake_headed_down_doesnt_change() {
+        let mut snake = Snake::new(10, 10, Direction::DOWN);
+
+        snake.change_direction(Direction::UP);
+
+        assert_eq!(snake.direction, Direction::DOWN);
+    }
+
+    #[test]
+    fn test_change_direction_down_snake_headed_left_goes_down() {
+        let mut snake = Snake::new(10, 10, Direction::LEFT);
+
+        snake.change_direction(Direction::DOWN);
+
+        assert_eq!(snake.direction, Direction::DOWN);
+    }
+
+    #[test]
+    fn test_change_direction_down_snake_headed_up_doesnt_change() {
+        let mut snake = Snake::new(10, 10, Direction::UP);
+
+        snake.change_direction(Direction::DOWN);
+
+        assert_eq!(snake.direction, Direction::UP);
+    }
+
+    #[test]
+    fn test_change_direction_left_snake_headed_down_goes_left() {
+        let mut snake = Snake::new(10, 10, Direction::DOWN);
+
+        snake.change_direction(Direction::LEFT);
+
+        assert_eq!(snake.direction, Direction::LEFT);
+    }
+
+    #[test]
+    fn test_change_direction_left_snake_headed_right_doesnt_change() {
+        let mut snake = Snake::new(10, 10, Direction::RIGHT);
+
+        snake.change_direction(Direction::LEFT);
+
+        assert_eq!(snake.direction, Direction::RIGHT);
+    }
+
+    #[test]
+    fn test_change_direction_right_snake_headed_down_goes_right() {
+        let mut snake = Snake::new(10, 10, Direction::DOWN);
+
+        snake.change_direction(Direction::RIGHT);
+
+        assert_eq!(snake.direction, Direction::RIGHT);
+    }
+
+    #[test]
+    fn test_change_direction_right_snake_headed_left_doesnt_change() {
+        let mut snake = Snake::new(10, 10, Direction::LEFT);
+
+        snake.change_direction(Direction::RIGHT);
+
+        assert_eq!(snake.direction, Direction::LEFT);
+    }
+}
