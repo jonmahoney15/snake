@@ -1,25 +1,26 @@
 use std::{io, time::Duration};
 
-use crate::{board::Board, food::Food, snake::{Direction, Snake}};
+use crate::{
+    board::Board,
+    food::Food,
+    snake::{Direction, Snake},
+};
 
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use rand::Rng;
 use ratatui::Frame;
-
 
 pub struct Game {
     running: bool,
     snake: Snake,
     board: Board,
     food: Food,
-    fps: u64,
-    score: u8
+    speed: u64,
+    score: u8,
 }
 
 impl Game {
-
-    pub fn new() -> Self {
-
+    pub fn new(speed: Option<u64>) -> Game {
         let mut rng = rand::rng();
 
         let x = 50;
@@ -33,19 +34,19 @@ impl Game {
         let rand_y: u16 = rng.random_range(y_min..y_max);
 
         let food = Food::new(rand_x, rand_y, x_min, x_max, y_min, y_max);
+        let speed = speed.unwrap_or(150);
 
         Self {
             running: true,
-            snake: Snake::new(x+10, y+10, Direction::RIGHT),
+            snake: Snake::new(x + 10, y + 10, Direction::Right),
             board,
             food,
-            fps: 150,
-            score:0
+            speed,
+            score: 0,
         }
     }
 
     pub fn update(&mut self) {
-
         if self.snake.collides_with_body() {
             self.running = false;
             return;
@@ -72,7 +73,7 @@ impl Game {
     }
 
     fn handle_events(&mut self) -> io::Result<()> {
-        if let Some(key_event) = self.poll_key_press(Duration::from_millis(self.fps))? {
+        if let Some(key_event) = self.poll_key_press(Duration::from_millis(self.speed))? {
             self.handle_key_event(key_event);
         }
         Ok(())
@@ -85,17 +86,17 @@ impl Game {
 
         match event::read()? {
             Event::Key(key_event) if key_event.kind == KeyEventKind::Press => Ok(Some(key_event)),
-            _ => Ok(None)
+            _ => Ok(None),
         }
     }
 
     fn handle_key_event(&mut self, key_event: KeyEvent) {
         match key_event.code {
             KeyCode::Esc => self.exit(),
-            KeyCode::Left => self.snake.change_direction(Direction::LEFT),
-            KeyCode::Right => self.snake.change_direction(Direction::RIGHT),
-            KeyCode::Up => self.snake.change_direction(Direction::UP),
-            KeyCode::Down => self.snake.change_direction(Direction::DOWN),
+            KeyCode::Left => self.snake.change_direction(Direction::Left),
+            KeyCode::Right => self.snake.change_direction(Direction::Right),
+            KeyCode::Up => self.snake.change_direction(Direction::Up),
+            KeyCode::Down => self.snake.change_direction(Direction::Down),
             _ => {}
         }
     }
@@ -119,13 +120,13 @@ mod tests {
 
     #[test]
     fn test_is_running_running_true() {
-        let game = Game::new();
+        let game = Game::new(None);
         assert_eq!(game.is_running(), true);
     }
 
     #[test]
     fn test_is_running_exit_false() {
-        let mut game = Game::new();
+        let mut game = Game::new(None);
         game.exit();
         assert_eq!(game.is_running(), false);
     }

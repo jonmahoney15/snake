@@ -9,7 +9,7 @@ use std::io;
 fn main() -> Result<(), io::Error> {
     let mut terminal = ratatui::init();
 
-    let mut game = Game::new();
+    let mut game = Game::new(None);
 
     while game.is_running() {
         terminal.draw(|f| {
