@@ -27,7 +27,6 @@ impl Food {
     }
 
     pub fn update(&mut self) {
-
         let mut rng = rand::rng();
 
         let rand_x: u16 = rng.random_range(self.x_min..self.x_max);
