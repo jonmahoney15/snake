@@ -1,22 +1,26 @@
+mod app;
 mod board;
 mod food;
 mod game;
+mod menu;
+mod score_board;
 mod snake;
 
-use game::Game;
+use app::App;
+use menu::Menu;
 use std::io;
 
 fn main() -> Result<(), io::Error> {
     let mut terminal = ratatui::init();
 
-    let mut game = Game::new(None);
+    let mut app = App::default();
 
-    while game.is_running() {
+    while app.is_running() {
         terminal.draw(|f| {
-            game.render(f);
+            app.render(f);
         })?;
 
-        game.update();
+        app.update();
     }
 
     ratatui::restore();
