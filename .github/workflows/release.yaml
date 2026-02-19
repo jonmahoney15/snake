@@ -8,13 +8,28 @@ on:
 jobs:
   release:
     name: Create Release from Tag
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     permissions:
       contents: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Update Cargo.toml version
+          echo "Updating Cargo.toml version to $TAG_VERSION"
+          sed -i -E "s/^version = \".*\"/version = \"$TAG_VERSION\"/" Cargo.toml
+
+      - name: Commit updated Cargo.toml
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Cargo.toml
+          git commit -m "Bump Cargo.toml version to ${{ github.ref_name }}" || echo "No changes to commit"
+          git push origin HEAD
 
       - name: Check Cargo.toml version matches tag
         run: |
@@ -44,4 +59,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.tag_message.outputs.BODY }}
-          file: /target/release/snake
+          files: |
+            target/release/snake       # Linux/macOS
+            target\release\snake.exe   # Windows
