@@ -1,0 +1,36 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  release:
+    name: Create Release from Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build project in release mode
+        run: cargo build --release
+
+      - name: Extract tag message
+        id: tag_message
+        run: |
+          echo "BODY<<EOF" >> $GITHUB_OUTPUT
+          git tag -l --format='%(contents)' ${{ github.ref_name }} >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Release
+        uses: softprops/action-gh-release
+        with:
+          body: ${{ steps.tag_message.outputs.BODY }}
+          file: /target/release/snake
