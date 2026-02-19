@@ -7,12 +7,6 @@ use ratatui::{
 
 use crate::app::Screen;
 
-#[derive(Clone, Copy)]
-pub enum Difficulty {
-    Easy,
-    Hard,
-}
-
 pub struct Menu {
     selected: usize,
     items: Vec<&'static str>,
@@ -81,5 +75,13 @@ impl Menu {
             },
             _ => Screen::Menu,
         }
+    }
+
+    pub fn get_difficulty(&self) -> u64 {
+        if self.selected == 0 {
+            return 150;
+        }
+
+        50
     }
 }

@@ -5,6 +5,7 @@ use ratatui::Frame;
 
 use crate::{Menu, game::Game, score_board::Score};
 
+#[derive(PartialEq, Eq, Debug)]
 pub enum Screen {
     Menu,
     Playing,
@@ -33,23 +34,19 @@ impl App {
 
     pub fn update(&mut self) {
         self.game.update();
+
+        if self.screen == Screen::Playing && !self.game.is_running() {
+            self.screen = Screen::Score;
+        }
+
         let _ = self.handle_events();
     }
 
     pub fn render(&mut self, frame: &mut Frame) {
         match self.screen {
             Screen::Menu => self.menu.render(frame),
-            Screen::Playing => {
-                self.game.render(frame);
-                self.game.update();
-
-                if !self.game.is_running() {
-                    self.screen = Screen::Score;
-                }
-            }
-            Screen::Score => {
-                Score::render(frame, self.game.score);
-            }
+            Screen::Playing => self.game.render(frame),
+            Screen::Score => Score::render(frame, self.game.score),
             Screen::Exit => self.exit(),
         }
     }
@@ -83,7 +80,14 @@ impl App {
 
     fn handle_input(&mut self, key: KeyEvent) {
         match self.screen {
-            Screen::Menu => self.screen = self.menu.handle_key_event(key),
+            Screen::Menu => {
+                self.screen = self.menu.handle_key_event(key);
+
+                if self.screen == Screen::Playing {
+                    self.game = Game::default();
+                    self.speed = self.menu.get_difficulty();
+                }
+            },
             Screen::Playing => self.game.handle_input(key),
             Screen::Exit => self.exit(),
             Screen::Score => {

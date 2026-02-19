@@ -16,4 +16,3 @@ $ cargo run --release
 ## TODO:
 
 - Make a binary release with git tag.
-- add cli menu to increase difficulty
