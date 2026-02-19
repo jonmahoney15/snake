@@ -23,7 +23,7 @@ impl Score {
             Line::from(Span::raw(format!("Score: {}", score))),
             Line::from(""),
             Line::from(Span::styled(
-                "Press Enter to return to menu",
+                "Press Enter to return to menu or ESC to exit",
                 Style::default().fg(Color::DarkGray),
             )),
         ];
@@ -36,8 +36,9 @@ impl Score {
 
     pub fn handle_key_event(&mut self, key_event: KeyEvent) -> Screen {
         match key_event.code {
-            KeyCode::Enter => return Screen::Exit,
-            _ => return Screen::Score,
+            KeyCode::Enter => Screen::Menu,
+            KeyCode::Esc => Screen::Exit,
+            _ => Screen::Score,
         }
     }
 }

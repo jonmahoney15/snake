@@ -66,15 +66,20 @@ impl Menu {
         match key_event.code {
             KeyCode::Up => {
                 self.prev();
-                return Screen::Menu;
+                Screen::Menu
             }
             KeyCode::Down => {
                 self.next();
-                return Screen::Menu;
+                Screen::Menu
             }
-            KeyCode::Esc => return Screen::Exit,
-            KeyCode::Enter => return Screen::Playing,
-            _ => return Screen::Menu,
+            KeyCode::Esc => Screen::Exit,
+            KeyCode::Enter => {
+                if self.selected == 2 {
+                    return Screen::Exit;
+                }
+                Screen::Playing
+            },
+            _ => Screen::Menu,
         }
     }
 }
