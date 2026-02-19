@@ -41,7 +41,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Release
-        uses: softprops/action-gh-release
+        uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.tag_message.outputs.BODY }}
           file: /target/release/snake
