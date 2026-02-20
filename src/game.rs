@@ -73,7 +73,7 @@ impl Game {
         }
     }
 
-    pub fn is_running(&mut self) -> bool {
+    pub fn is_running(&self) -> bool {
         self.running
     }
 
@@ -89,21 +89,21 @@ impl Game {
         }
     }
 }
-//
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//
-//     #[test]
-//     fn test_is_running_running_true() {
-//         let game = Game::new(None);
-//         assert_eq!(game.is_running(), true);
-//     }
-//
-//     #[test]
-//     fn test_is_running_exit_false() {
-//         let mut game = Game::new(None);
-//         game.exit();
-//         assert_eq!(game.is_running(), false);
-//     }
-// }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_is_running_running_true() {
+        let game = Game::default();
+        assert_eq!(game.is_running(), true);
+    }
+
+    #[test]
+    fn test_is_running_exit_false() {
+        let mut game = Game::default();
+        game.exit();
+        assert_eq!(game.is_running(), false);
+    }
+}

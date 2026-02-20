@@ -87,7 +87,7 @@ impl App {
                     self.game = Game::default();
                     self.speed = self.menu.get_difficulty();
                 }
-            },
+            }
             Screen::Playing => self.game.handle_input(key),
             Screen::Exit => self.exit(),
             Screen::Score => {

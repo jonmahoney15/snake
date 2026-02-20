@@ -72,7 +72,7 @@ impl Menu {
                     return Screen::Exit;
                 }
                 Screen::Playing
-            },
+            }
             _ => Screen::Menu,
         }
     }
