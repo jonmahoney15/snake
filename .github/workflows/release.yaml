@@ -36,13 +36,23 @@ jobs:
       - name: Build project in release mode
         run: cargo build --release
 
+      - name: Rename binary for release
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            mv target/release/snake target/release/snake-linux
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            mv target/release/snake target/release/snake-macos
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            mv target/release/snake.exe target/release/snake-windows.exe
+          fi
+
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
           name: snake-${{ matrix.os }}
           path: |
-            target/release/snake
-            target/release/snake.exe
+            target/release/snake-*
 
   release:
     name: Create Release from Tag
@@ -60,6 +70,9 @@ jobs:
         with:
           path: release_binaries
 
+      - name: Display structure of downloaded files
+        run: ls -R
+
       - name: Extract tag message
         id: tag_message
         run: |
@@ -72,7 +85,5 @@ jobs:
         with:
           body: ${{ steps.tag_message.outputs.BODY }}
           files: |
-            release_binaries/snake-ubuntu-latest/snake=snake-linux
-            release_binaries/snake-macos-latest/snake=snake-macos
-            release_binaries/snake-windows-latest/snake.exe=snake-windows.exe
+            release_binaries/*/*
           overwrite_files: true
