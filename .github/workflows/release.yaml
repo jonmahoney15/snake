@@ -37,7 +37,7 @@ jobs:
         run: cargo build --release
 
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snake-${{ matrix.os }}
           path: |
@@ -52,6 +52,14 @@ jobs:
       contents: write
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: release_binaries
+
       - name: Extract tag message
         id: tag_message
         run: |
@@ -63,6 +71,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.tag_message.outputs.BODY }}
-          files: |
-            target/release/snake
-            target\release\snake.exe
+          files: release_binaries/*
+          overwrite_files: true
