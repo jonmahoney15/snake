@@ -71,5 +71,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.tag_message.outputs.BODY }}
-          files: release_binaries/*/*
+          files: |
+            release_binaries/snake-ubuntu-latest/snake=snake-linux
+            release_binaries/snake-macos-latest/snake=snake-macos
+            release_binaries/snake-windows-latest/snake.exe=snake-windows.exe
           overwrite_files: true
